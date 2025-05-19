@@ -10,7 +10,7 @@ from rest_framework import status
 # from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
-def product_list(request):
+def product_list(request, format=None): # format=None is for creating json-file in browser
     """
     Verarbeitet GET- und POST-Anfragen für alle Produkt.
 
@@ -36,7 +36,7 @@ def product_list(request):
         return Response(status=status.HTTP_204_NO_CONTENT)
         
 @api_view(['GET', 'PUT', 'DELETE'])
-def product(request, pk):
+def product(request, pk, format=None):
     """
     Verarbeitet GET-, PUT- und DELETE-Anfragen für ein einzelnes Produkt.
 
