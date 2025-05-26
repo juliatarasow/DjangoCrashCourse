@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from . models import Product
-from . serializers import ProductSerializer
+from . serializers import ProductSerializer, RegistrationSerializer
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view 
@@ -66,3 +66,16 @@ def product(request, pk, format=None):
     elif request.method == 'DELETE':
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+@api_view(['POST'])
+def register(request):
+    if request.method == 'POST':
+        serializer = RegistrationSerializer(data=request.data)
+        data = {}
+
+        if serializer.is_valid():
+            user = serializer.save()
+            data['response'] = 'Seccessfully registered a new user!'
+        else:
+            data = serializer.errors
+        return Response(data)

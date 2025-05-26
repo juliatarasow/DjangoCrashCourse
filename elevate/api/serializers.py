@@ -17,17 +17,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
-def save(self):
-    user = User(
-        username=self.validated_data['username'],
-        email=self.validated_data['email'],
-    )
+    def save(self):
+        user = User(
+            username=self.validated_data['username'],
+            email=self.validated_data['email'],
+        )
 
-    password=self.validated_data['password'],
-    password2=self.validated_data['password2']
+        password=self.validated_data['password']
+        password2=self.validated_data['password2']
 
-    if password != password2:
-        raise serializers.ValidationError({'password': 'Sorry, the passwords did not match'})
+        if password != password2:
+            raise serializers.ValidationError({'password': 'Sorry, the passwords did not match'})
 
-    user.set_password(password) # password is hashed automatically
-    return user
+        user.set_password(password) # password is hashed automatically
+        user.save()
+        return user
