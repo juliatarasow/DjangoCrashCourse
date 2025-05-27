@@ -9,6 +9,12 @@ class ProductSerializer(serializers.ModelSerializer):
         # fields = '__all__' 
 
 class RegistrationSerializer(serializers.ModelSerializer):
+    """
+    User registration serializer with password confirmation.
+   
+    Handles user creation with password matching validation.
+    Requires password confirmation field and hashes password securely.
+    """
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True) # write_only=True -> can not be read! (GET)-> only: PUT/POST
     class Meta:
         model = User

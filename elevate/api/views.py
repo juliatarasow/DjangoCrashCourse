@@ -5,6 +5,7 @@ from . serializers import ProductSerializer, RegistrationSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view 
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 
 
 # from django.http import JsonResponse
@@ -12,13 +13,13 @@ from rest_framework import status
 @api_view(['GET', 'POST'])
 def product_list(request, format=None): # format=None is for creating json-file in browser
     """
-    Verarbeitet GET- und POST-Anfragen für alle Produkt.
+    Processes GET- and POST-Requests for all products
 
     Args:
-        request (HttpRequest): Die eingehende HTTP-Anfrage.
+        request (HttpRequest): Incoming HTTP-Request
 
     Returns:
-        Response: JSON-Antwort mit Produktdaten.
+        Response: JSON-Response with all product data
     """
     # pass # this catches errors
     if request.method == 'GET':
@@ -38,14 +39,14 @@ def product_list(request, format=None): # format=None is for creating json-file 
 @api_view(['GET', 'PUT', 'DELETE'])
 def product(request, pk, format=None):
     """
-    Verarbeitet GET-, PUT- und DELETE-Anfragen für ein einzelnes Produkt.
+    Processes GET-, PUT- and DELETE-Requests for one single product
 
     Args:
-        request (HttpRequest): Die eingehende HTTP-Anfrage.
-        pk (int): Primärschlüssel des Produkts.
+        request (HttpRequest): Incoming HTTP-Request
+        pk (int): Primary key of product
 
     Returns:
-        Response: JSON-Antwort mit Produktdaten.
+        Response: JSON-Response with product data
     """
     try: 
         product = Product.objects.get(id=pk)
@@ -69,6 +70,15 @@ def product(request, pk, format=None):
     
 @api_view(['POST'])
 def register(request):
+    """
+    Processes POST-Requests for user
+
+    Args:
+        request (HttpRequest): Incoming HTTP-Request
+
+    Returns:
+        Response: JSON-Response with user data
+    """
     if request.method == 'POST':
         serializer = RegistrationSerializer(data=request.data)
         data = {}
@@ -76,6 +86,11 @@ def register(request):
         if serializer.is_valid():
             user = serializer.save()
             data['response'] = 'Seccessfully registered a new user!'
+
+            ######
+
+            auth_token = Token.objects.get(user=user).key
+            data['token'] = auth_token
         else:
             data = serializer.errors
         return Response(data)
